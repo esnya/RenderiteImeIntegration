@@ -17,6 +17,10 @@
     <PropertyGroup>
       <_BuiltAssembly>$(TargetPath)</_BuiltAssembly>
       <_HotReloadEnabled>$(EnableResoniteHotReloadLib)</_HotReloadEnabled>
+      <_DeprecatedCurrentDll>$(ResoniteModsDir)\ResoniteImeIntegration.dll</_DeprecatedCurrentDll>
+      <_DeprecatedCurrentPdb>$(ResoniteModsDir)\ResoniteImeIntegration.pdb</_DeprecatedCurrentPdb>
+      <_DeprecatedHotReloadDll>$(ResoniteHotReloadModsDir)\ResoniteImeIntegration.dll</_DeprecatedHotReloadDll>
+      <_DeprecatedHotReloadPdb>$(ResoniteHotReloadModsDir)\ResoniteImeIntegration.pdb</_DeprecatedHotReloadPdb>
       <_LegacyImeDll>$(ResoniteHotReloadModsDir)\ResoniteImeIntegration.Mod.dll</_LegacyImeDll>
       <_LegacyImePdb>$(ResoniteHotReloadModsDir)\ResoniteImeIntegration.Mod.pdb</_LegacyImePdb>
       <_LegacyImeConfig>$(ResolvedResonitePath)\rml_config\ResoniteImeIntegration.Mod.json</_LegacyImeConfig>
@@ -26,7 +30,27 @@
     <Message
       Text="Disabling deprecated legacy IME artifacts before copy."
       Importance="high"
-      Condition="Exists('$(_LegacyImeDll)') OR Exists('$(_LegacyImePdb)') OR Exists('$(_LegacyImeConfig)')"
+      Condition="Exists('$(_DeprecatedCurrentDll)') OR Exists('$(_DeprecatedCurrentPdb)') OR Exists('$(_DeprecatedHotReloadDll)') OR Exists('$(_DeprecatedHotReloadPdb)') OR Exists('$(_LegacyImeDll)') OR Exists('$(_LegacyImePdb)') OR Exists('$(_LegacyImeConfig)')"
+    />
+    <Move
+      SourceFiles="$(_DeprecatedCurrentDll)"
+      DestinationFiles="$(_DeprecatedCurrentDll)$(_LegacySuffix)"
+      Condition="Exists('$(_DeprecatedCurrentDll)') AND '$(TargetFileName)'!='ResoniteImeIntegration.dll'"
+    />
+    <Move
+      SourceFiles="$(_DeprecatedCurrentPdb)"
+      DestinationFiles="$(_DeprecatedCurrentPdb)$(_LegacySuffix)"
+      Condition="Exists('$(_DeprecatedCurrentPdb)') AND '$(TargetFileName)'!='ResoniteImeIntegration.pdb'"
+    />
+    <Move
+      SourceFiles="$(_DeprecatedHotReloadDll)"
+      DestinationFiles="$(_DeprecatedHotReloadDll)$(_LegacySuffix)"
+      Condition="Exists('$(_DeprecatedHotReloadDll)') AND '$(TargetFileName)'!='ResoniteImeIntegration.dll'"
+    />
+    <Move
+      SourceFiles="$(_DeprecatedHotReloadPdb)"
+      DestinationFiles="$(_DeprecatedHotReloadPdb)$(_LegacySuffix)"
+      Condition="Exists('$(_DeprecatedHotReloadPdb)') AND '$(TargetFileName)'!='ResoniteImeIntegration.pdb'"
     />
     <Move
       SourceFiles="$(_LegacyImeDll)"

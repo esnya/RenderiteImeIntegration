@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResoniteImeIntegration", "ResoniteImeIntegration\ResoniteImeIntegration.csproj", "{5A9FE48E-D613-4236-8214-80480B1371B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImeIntegration", "ImeIntegration\ImeIntegration.csproj", "{5A9FE48E-D613-4236-8214-80480B1371B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResoniteImeIntegration.Tests", "ResoniteImeIntegration.Tests\ResoniteImeIntegration.Tests.csproj", "{B1F2E1C5-4A3B-4F5A-9E8D-2C7F6B9A1E3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImeIntegration.Tests", "ImeIntegration.Tests\ImeIntegration.Tests.csproj", "{B1F2E1C5-4A3B-4F5A-9E8D-2C7F6B9A1E3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

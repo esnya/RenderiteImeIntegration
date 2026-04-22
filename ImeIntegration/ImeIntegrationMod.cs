@@ -1,17 +1,18 @@
 using System.Reflection;
 using HarmonyLib;
+using ImeIntegration.Core;
 using ResoniteModLoader;
 #if USE_RESONITE_HOT_RELOAD_LIB
 using ResoniteHotReloadLib;
 #endif
 
-namespace ResoniteImeIntegration;
+namespace ImeIntegration;
 
 /// <summary>Entry point for the Windows desktop IME integration mod.</summary>
-public sealed class ResoniteImeIntegrationMod : ResoniteMod
+public sealed class ImeIntegrationMod : ResoniteMod
 {
     private const string ModNamespace = "com.nekometer.esnya";
-    private static readonly Assembly Assembly = typeof(ResoniteImeIntegrationMod).Assembly;
+    private static readonly Assembly Assembly = typeof(ImeIntegrationMod).Assembly;
     private static readonly string HarmonyId = $"{ModNamespace}.{Assembly.GetName().Name}";
     private static readonly Harmony Harmony = new(HarmonyId);
 
@@ -64,6 +65,14 @@ public sealed class ResoniteImeIntegrationMod : ResoniteMod
 #if USE_RESONITE_HOT_RELOAD_LIB
         HotReloader.RegisterForHotReload(mod);
 #endif
+        ImeRuntime.DebugLog(
+            () =>
+                $"Initialize options={ImeIntegrationOptions.Describe()} contract={RenderiteCompositionContract.Describe()}"
+        );
+        if (!RenderiteCompositionContract.IsSupported)
+        {
+            return;
+        }
         Harmony.PatchAll();
     }
 
@@ -73,7 +82,6 @@ public sealed class ResoniteImeIntegrationMod : ResoniteMod
         if (OperatingSystem.IsWindows())
         {
             Windows.WindowsImeOverlayManager.Teardown();
-            Windows.WindowsTsfService.Teardown();
         }
         ImeRuntime.Controller.Reset();
     }

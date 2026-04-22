@@ -1,11 +1,12 @@
 # ResoniteImeIntegration
 
-A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that targets Windows desktop IME integration.
+A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod repository for [Resonite](https://resonite.com/) that ships the `ImeIntegration` mod and targets Windows desktop IME integration.
 
 ## Installation
 
 1. Install the [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader).
-1. Place the [ResoniteImeIntegration.dll](https://github.com/esnya/ResoniteImeIntegration/releases/latest/download/ResoniteImeIntegration.dll) into your `rml_mods` folder. This folder should be located at `C:\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods` for a standard installation. You can create it if it's missing, or if you start the game once with the ResoniteModLoader installed it will create this folder for you.
+1. Ensure your Resonite launch options include `-LoadAssembly Libraries/ResoniteModLoader.dll`, per the ResoniteModLoader installation instructions.
+1. Place the `ImeIntegration.dll` build output into your `rml_mods` folder. This folder should be located at `C:\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods` for a standard installation. You can create it if it's missing, or if you start the game once with the ResoniteModLoader installed it will create this folder for you.
 1. Launch the game. If you want to check that the mod is working you can check your Resonite logs.
 
 ## Development
@@ -26,6 +27,7 @@ A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoade
 
 - Before committing, run `dotnet format ResoniteImeIntegration.sln --verify-no-changes --no-restore`.
 - Keep local builds/tests aligned with CI by running `dotnet build ResoniteImeIntegration.sln -c Release -p:ResonitePath="..."` and `dotnet test ResoniteImeIntegration.sln -c Release -p:ResonitePath="..."`.
+- If the runtime `Renderite.Shared` contract does not expose composition fields, `ImeIntegration` stays loaded but does not patch or render overlays.
 - Refer to `AGENTS.md` for the authoritative checklist shared with CI.
 
 ### Install to `rml_mods` Directory (and `rml_mods/HotReloadMods`)

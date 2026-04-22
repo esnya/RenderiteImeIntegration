@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace ResoniteImeIntegration.Tests;
+namespace ImeIntegration.Tests;
 
 /// <summary>
 /// Helper class to read properties from MSBuild project files.
@@ -69,20 +69,19 @@ internal static class ProjectPropertiesReader
         GetPropertyFromDirectoryBuildProps("Version") ?? GetGitVersionMarker();
 
     /// <summary>
-    /// Gets the expected assembly title (project name) by deriving it from the solution file name.
+    /// Gets the expected assembly title from the main project file name.
     /// </summary>
     public static string ExpectedAssemblyTitle
     {
         get
         {
-            // Derive project name from solution file
             string solutionDir = SolutionDirectory.Value;
-            string? solutionFile = Directory
-                .GetFiles(solutionDir, "*.sln")
-                .FirstOrDefault();
-            return solutionFile == null
-                ? throw new InvalidOperationException("No solution file found in solution directory")
-                : Path.GetFileNameWithoutExtension(solutionFile);
+            string? projectFile = Directory
+                .GetFiles(solutionDir, "*.csproj", SearchOption.AllDirectories)
+                .FirstOrDefault(path => !path.EndsWith(".Tests.csproj", StringComparison.Ordinal));
+            return projectFile == null
+                ? throw new InvalidOperationException("No main project file found in solution directory")
+                : Path.GetFileNameWithoutExtension(projectFile);
         }
     }
 

@@ -1,4 +1,4 @@
-namespace ResoniteImeIntegration.Core;
+namespace ImeIntegration.Core;
 
 internal sealed class ImeStateController(Action onEnable, Action onDisable)
 {

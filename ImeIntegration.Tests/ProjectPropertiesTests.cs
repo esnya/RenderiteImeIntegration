@@ -2,7 +2,7 @@
 #pragma warning disable CA1515 // Types should be made internal - xUnit requires test classes to be public
 using Xunit;
 
-namespace ResoniteImeIntegration.Tests;
+namespace ImeIntegration.Tests;
 
 public sealed class ProjectPropertiesTests
 {

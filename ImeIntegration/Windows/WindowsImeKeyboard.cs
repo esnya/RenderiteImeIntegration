@@ -1,7 +1,7 @@
 using FrooxEngine;
 using FrooxEngine.Input;
 
-namespace ResoniteImeIntegration.Windows;
+namespace ImeIntegration.Windows;
 
 internal sealed class WindowsImeKeyboard : ISystemKeyboard
 {

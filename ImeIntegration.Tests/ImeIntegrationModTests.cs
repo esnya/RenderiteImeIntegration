@@ -1,16 +1,16 @@
 using System.Reflection;
-using ResoniteImeIntegration;
+using ImeIntegration;
 using Xunit;
 
-namespace ResoniteImeIntegration.Tests;
+namespace ImeIntegration.Tests;
 
-public sealed class ResoniteImeIntegrationModTests
+public sealed class ImeIntegrationModTests
 {
     [Fact]
     public void Public_metadata_matches_project_properties()
     {
-        var mod = new ResoniteImeIntegrationMod();
-        var assembly = typeof(ResoniteImeIntegrationMod).Assembly;
+        var mod = new ImeIntegrationMod();
+        var assembly = typeof(ImeIntegrationMod).Assembly;
         var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>();
         var author = assembly.GetCustomAttribute<AssemblyCompanyAttribute>();
         var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();

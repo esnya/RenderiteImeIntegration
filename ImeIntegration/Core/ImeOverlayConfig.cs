@@ -1,4 +1,4 @@
-namespace ResoniteImeIntegration.Core;
+namespace ImeIntegration.Core;
 
 internal static class ImeOverlayConfig
 {

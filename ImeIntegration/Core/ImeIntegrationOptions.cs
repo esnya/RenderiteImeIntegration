@@ -1,9 +1,7 @@
-namespace ResoniteImeIntegration.Core;
+namespace ImeIntegration.Core;
 
 internal static class ImeIntegrationOptions
 {
-    public static bool UseTsfFirst { get; } = GetBool("TEXTINPUTIME_USE_TSF", defaultValue: true);
-
     public static bool ShowFallbackOverlay { get; } =
         GetBool("TEXTINPUTIME_SHOW_FALLBACK_OVERLAY", defaultValue: true);
 
@@ -12,6 +10,10 @@ internal static class ImeIntegrationOptions
 
     public static bool VerboseLogging { get; } =
         GetBool("TEXTINPUTIME_VERBOSE", defaultValue: false);
+
+    public static string Describe() =>
+        $"ShowFallbackOverlay={ShowFallbackOverlay} ForceOverlay={ForceOverlay} "
+        + $"VerboseLogging={VerboseLogging}";
 
     private static bool GetBool(string name, bool defaultValue)
     {
