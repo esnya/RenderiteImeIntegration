@@ -17,8 +17,32 @@
     <PropertyGroup>
       <_BuiltAssembly>$(TargetPath)</_BuiltAssembly>
       <_HotReloadEnabled>$(EnableResoniteHotReloadLib)</_HotReloadEnabled>
+      <_LegacyImeDll>$(ResoniteHotReloadModsDir)\ResoniteImeIntegration.Mod.dll</_LegacyImeDll>
+      <_LegacyImePdb>$(ResoniteHotReloadModsDir)\ResoniteImeIntegration.Mod.pdb</_LegacyImePdb>
+      <_LegacyImeConfig>$(ResolvedResonitePath)\rml_config\ResoniteImeIntegration.Mod.json</_LegacyImeConfig>
+      <_LegacySuffix>.disabled.$([System.DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))</_LegacySuffix>
     </PropertyGroup>
     <Error Text="Build output not found at $(TargetPath)." Condition="!Exists('$(TargetPath)')" />
+    <Message
+      Text="Disabling deprecated legacy IME artifacts before copy."
+      Importance="high"
+      Condition="Exists('$(_LegacyImeDll)') OR Exists('$(_LegacyImePdb)') OR Exists('$(_LegacyImeConfig)')"
+    />
+    <Move
+      SourceFiles="$(_LegacyImeDll)"
+      DestinationFiles="$(_LegacyImeDll)$(_LegacySuffix)"
+      Condition="Exists('$(_LegacyImeDll)')"
+    />
+    <Move
+      SourceFiles="$(_LegacyImePdb)"
+      DestinationFiles="$(_LegacyImePdb)$(_LegacySuffix)"
+      Condition="Exists('$(_LegacyImePdb)')"
+    />
+    <Move
+      SourceFiles="$(_LegacyImeConfig)"
+      DestinationFiles="$(_LegacyImeConfig)$(_LegacySuffix)"
+      Condition="Exists('$(_LegacyImeConfig)')"
+    />
     <ItemGroup>
       <_CopyDestination Include="$(ResoniteModsDir)/$(TargetFileName)">
         <SkipUnchangedFiles>true</SkipUnchangedFiles>

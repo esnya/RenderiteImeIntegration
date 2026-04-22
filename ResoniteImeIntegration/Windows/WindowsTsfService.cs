@@ -1,9 +1,11 @@
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using ResoniteModLoader;
 
 namespace ResoniteImeIntegration.Windows;
 
+[SupportedOSPlatform("windows")]
 internal static class WindowsTsfService
 {
     [ComImport]
@@ -457,9 +459,11 @@ internal static class WindowsTsfService
         }
     }
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("ole32.dll")]
     private static extern int CoInitializeEx(nint reserved, uint initMode);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern bool PeekMessage(
         out Msg message,
@@ -469,9 +473,11 @@ internal static class WindowsTsfService
         uint remove
     );
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern bool TranslateMessage(ref Msg message);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern nint DispatchMessage(ref Msg message);
 }

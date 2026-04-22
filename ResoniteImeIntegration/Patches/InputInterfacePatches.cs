@@ -8,6 +8,8 @@ namespace ResoniteImeIntegration.Patches;
 [HarmonyPatch(typeof(InputInterface))]
 internal static class InputInterfacePatches
 {
+    private static readonly WindowsImeKeyboard SharedKeyboard = new();
+
     [HarmonyPatch("ShowKeyboard")]
     [HarmonyPrefix]
     private static void ShowKeyboardPrefix(InputInterface __instance)
@@ -21,7 +23,7 @@ internal static class InputInterfacePatches
         {
             if (__instance.SystemKeyboard is null)
             {
-                __instance.RegisterTouchKeyboard(new WindowsImeKeyboard());
+                __instance.RegisterTouchKeyboard(SharedKeyboard);
             }
         }
         catch

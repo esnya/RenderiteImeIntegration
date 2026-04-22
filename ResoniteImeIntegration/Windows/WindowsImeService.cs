@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using System.Runtime.InteropServices;
 using System.Text;
 using FrooxEngine;
 
 namespace ResoniteImeIntegration.Windows;
 
+[SupportedOSPlatform("windows")]
 internal static class WindowsImeService
 {
     public sealed record CandidateData(string[] Items, int Selection, int PageStart, int PageSize);
@@ -383,33 +385,43 @@ internal static class WindowsImeService
         }
     }
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern nint GetForegroundWindow();
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern nint GetActiveWindow();
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern bool GetGUIThreadInfo(uint idThread, ref GuiThreadInfo guiThreadInfo);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern uint GetWindowThreadProcessId(nint hWnd, out uint processId);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool attach);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern nint GetFocus();
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("user32.dll")]
     private static extern bool GetWindowRect(nint hWnd, out Rect rect);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("kernel32.dll")]
     private static extern uint GetCurrentThreadId();
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("imm32.dll")]
     private static extern nint ImmGetContext(nint hWnd);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("imm32.dll", CharSet = CharSet.Unicode)]
     private static extern int ImmGetCompositionStringW(
         nint himc,
@@ -418,6 +430,7 @@ internal static class WindowsImeService
         int bufferLength
     );
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("imm32.dll", CharSet = CharSet.Unicode)]
     private static extern int ImmGetCandidateListW(
         nint himc,
@@ -426,12 +439,15 @@ internal static class WindowsImeService
         int bufferLength
     );
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("imm32.dll")]
     private static extern bool ImmReleaseContext(nint hWnd, nint himc);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("imm32.dll")]
     private static extern bool ImmSetCompositionWindow(nint himc, ref CompositionForm compositionForm);
 
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("imm32.dll")]
     private static extern bool ImmSetCandidateWindow(nint himc, ref CandidateForm candidateForm);
 }

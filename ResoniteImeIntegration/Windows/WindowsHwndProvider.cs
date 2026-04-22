@@ -1,8 +1,10 @@
+using System.Runtime.Versioning;
 using System.Reflection;
 using ResoniteModLoader;
 
 namespace ResoniteImeIntegration.Windows;
 
+[SupportedOSPlatform("windows")]
 internal static class WindowsHwndProvider
 {
     private static readonly string[] HandleNames = ["HWND", "Hwnd", "WindowHandle", "Handle"];

@@ -1,8 +1,6 @@
-using System.Threading;
-
 namespace ResoniteImeIntegration.Core;
 
-public sealed class ImeStateController(Action onEnable, Action onDisable)
+internal sealed class ImeStateController(Action onEnable, Action onDisable)
 {
     private int _depth;
     private readonly Action _onEnable = onEnable ?? throw new ArgumentNullException(nameof(onEnable));

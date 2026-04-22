@@ -1,7 +1,9 @@
+using System.Runtime.Versioning;
 using ResoniteImeIntegration.Core;
 
 namespace ResoniteImeIntegration.Windows;
 
+[SupportedOSPlatform("windows")]
 internal static class WindowsIme
 {
     public static string GetCompositionString()

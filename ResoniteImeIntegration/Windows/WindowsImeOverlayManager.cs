@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Runtime.Versioning;
 using Elements.Core;
 using FrooxEngine;
 using FrooxEngine.UIX;
@@ -6,6 +7,7 @@ using ResoniteImeIntegration.Core;
 
 namespace ResoniteImeIntegration.Windows;
 
+[SupportedOSPlatform("windows")]
 internal static class WindowsImeOverlayManager
 {
     private sealed class Overlay
