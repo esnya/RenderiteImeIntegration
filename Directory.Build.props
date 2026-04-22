@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Authors>esnya</Authors>
     <Description>Windows desktop IME candidate integration for Resonite text input.</Description>
-    <RepositoryUrl>https://github.com/esnya/ResoniteImeIntegration</RepositoryUrl>
+    <RepositoryUrl>https://github.com/esnya/RenderiteImeIntegration</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
