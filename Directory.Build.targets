@@ -1,0 +1,53 @@
+<Project>
+  <Target Name="EnsureResonitePath" BeforeTargets="ResolveReferences">
+    <Error
+      Condition="'$(ResonitePath)'==''"
+      Text="ResonitePath must be set (install Resonite next to the repo or pass -p:ResonitePath=/absolute/path/to/Resonite)."
+    />
+    <Error
+      Condition="!Exists('$(ResoniteFrooxEngineDll)')"
+      Text="Cannot find FrooxEngine.dll under $(ResolvedResonitePath)."
+    />
+  </Target>
+  <Target
+    Name="CopyModToResonite"
+    AfterTargets="Build"
+    Condition="'$(IsTestProject)'!='true' AND '$(CopyToMods)'=='true'"
+  >
+    <PropertyGroup>
+      <_BuiltAssembly>$(TargetPath)</_BuiltAssembly>
+      <_HotReloadEnabled>$(EnableResoniteHotReloadLib)</_HotReloadEnabled>
+    </PropertyGroup>
+    <Error Text="Build output not found at $(TargetPath)." Condition="!Exists('$(TargetPath)')" />
+    <ItemGroup>
+      <_CopyDestination Include="$(ResoniteModsDir)/$(TargetFileName)">
+        <SkipUnchangedFiles>true</SkipUnchangedFiles>
+        <Retries>2</Retries>
+        <RetryDelayMilliseconds>250</RetryDelayMilliseconds>
+        <ContinueOnError>true</ContinueOnError>
+        <Message>Copying $(TargetFileName) to $(ResoniteModsDir)</Message>
+      </_CopyDestination>
+      <_CopyDestination Include="$(ResoniteHotReloadModsDir)/$(TargetFileName)" Condition="$(_HotReloadEnabled)">
+        <SkipUnchangedFiles>true</SkipUnchangedFiles>
+        <Retries>1</Retries>
+        <RetryDelayMilliseconds>100</RetryDelayMilliseconds>
+        <ContinueOnError>false</ContinueOnError>
+        <Message>Copying $(TargetFileName) to $(ResoniteHotReloadModsDir)</Message>
+      </_CopyDestination>
+      <_CopyDir Include="$(ResoniteModsDir)" />
+      <_CopyDir Include="$(ResoniteHotReloadModsDir)" Condition="$(_HotReloadEnabled)" />
+    </ItemGroup>
+    <Message Text="@( _CopyDestination -> '%(Message)')"
+             Importance="high"
+             Condition="'@(_CopyDestination)'!=''" />
+    <MakeDir Directories="@(_CopyDir)" Condition="'@(_CopyDir)'!=''" />
+    <Copy
+      SourceFiles="$(_BuiltAssembly)"
+      DestinationFiles="@(_CopyDestination)"
+      SkipUnchangedFiles="%(_CopyDestination.SkipUnchangedFiles)"
+      Retries="%(_CopyDestination.Retries)"
+      RetryDelayMilliseconds="%(_CopyDestination.RetryDelayMilliseconds)"
+      ContinueOnError="%(_CopyDestination.ContinueOnError)"
+    />
+  </Target>
+</Project>
