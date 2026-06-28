@@ -1,0 +1,98 @@
+<Project>
+  <PropertyGroup>
+    <Authors>esnya</Authors>
+    <Description>Windows desktop IME candidate integration for Resonite text input.</Description>
+    <RepositoryUrl>https://github.com/esnya/RenderiteImeIntegration</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright (c) 2025 $(Authors)</Copyright>
+    <PackageTags>Resonite,Mod,ResoniteModLoader</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IsTestProject Condition="'$(IsTestProject)'==''">false</IsTestProject>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('.Tests'))">
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <DebugType Condition="'$(Configuration)'=='Debug'">embedded</DebugType>
+    <DebugType Condition="'$(Configuration)'=='Release'">pdbonly</DebugType>
+    <Optimize Condition="'$(Configuration)'=='Release'">true</Optimize>
+    <AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
+    <Product>$(MSBuildProjectName)</Product>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+    <WarningLevel>9999</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>NU1701</WarningsNotAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CopyLocalLockFileAssemblies>$(IsTestProject)</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsTestProject)'=='true'">
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CopyToMods Condition="'$(CopyToMods)'==''">false</CopyToMods>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ResonitePath)'==''">
+    <ResonitePath>$(MSBuildThisFileDirectory)Resonite/</ResonitePath>
+    <ResonitePath Condition="Exists('/mnt/c/Program Files (x86)/Steam/steamapps/common/Resonite/')"
+      >/mnt/c/Program Files (x86)/Steam/steamapps/common/Resonite/</ResonitePath
+    >
+    <ResonitePath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\Resonite\')"
+      >C:\Program Files (x86)\Steam\steamapps\common\Resonite\</ResonitePath
+    >
+    <ResonitePath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/Resonite/')"
+      >$(HOME)/.steam/steam/steamapps/common/Resonite/</ResonitePath
+    >
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ResonitePath)'!=''">
+    <ResolvedResonitePath>$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(ResonitePath)'))))</ResolvedResonitePath>
+    <ResoniteLibrariesDir>$([System.IO.Path]::Combine('$(ResolvedResonitePath)', 'Libraries'))</ResoniteLibrariesDir>
+    <ResoniteLibsDir>$([System.IO.Path]::Combine('$(ResolvedResonitePath)', 'rml_libs'))</ResoniteLibsDir>
+    <ResoniteModsDir>$([System.IO.Path]::Combine('$(ResolvedResonitePath)', 'rml_mods'))</ResoniteModsDir>
+    <ResoniteFrooxEngineDll>$([System.IO.Path]::Combine('$(ResolvedResonitePath)', 'FrooxEngine.dll'))</ResoniteFrooxEngineDll>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ResoniteModLoader">
+      <HintPath>$([System.IO.Path]::Combine('$(ResoniteLibrariesDir)', 'ResoniteModLoader.dll'))</HintPath>
+      <Private>$(IsTestProject)</Private>
+    </Reference>
+    <Reference Include="HarmonyLib">
+      <HintPath>$([System.IO.Path]::Combine('$(ResoniteLibsDir)', '0Harmony.dll'))</HintPath>
+      <Private>$(IsTestProject)</Private>
+    </Reference>
+    <Reference Include="FrooxEngine">
+      <HintPath>$(ResoniteFrooxEngineDll)</HintPath>
+      <Private>$(IsTestProject)</Private>
+    </Reference>
+    <Reference Include="Elements.Core">
+      <HintPath>$([System.IO.Path]::Combine('$(ResolvedResonitePath)', 'Elements.Core.dll'))</HintPath>
+      <Private>$(IsTestProject)</Private>
+    </Reference>
+    <Reference Include="Renderite.Shared">
+      <HintPath>$([System.IO.Path]::Combine('$(ResolvedResonitePath)', 'Renderite.Shared.dll'))</HintPath>
+      <Private>$(IsTestProject)</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory).github\**\*" LinkBase=".github" />
+    <EditorConfigFiles Remove="$(MSBuildProjectDirectory)**\*.editorconfig" />
+  </ItemGroup>
+</Project>

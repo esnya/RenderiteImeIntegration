@@ -1,0 +1,68 @@
+<Project>
+  <Target Name="EnsureResonitePath" BeforeTargets="ResolveReferences">
+    <Error
+      Condition="'$(ResonitePath)'==''"
+      Text="ResonitePath must be set (install Resonite next to the repo or pass -p:ResonitePath=/absolute/path/to/Resonite)."
+    />
+    <Error
+      Condition="!Exists('$(ResoniteFrooxEngineDll)')"
+      Text="Cannot find FrooxEngine.dll under $(ResolvedResonitePath)."
+    />
+  </Target>
+  <Target
+    Name="CopyModToResonite"
+    AfterTargets="Build"
+    Condition="'$(IsTestProject)'!='true' AND '$(CopyToMods)'=='true'"
+  >
+    <PropertyGroup>
+      <_BuiltAssembly>$(TargetPath)</_BuiltAssembly>
+      <_DeprecatedCurrentDll>$(ResoniteModsDir)\ResoniteImeIntegration.dll</_DeprecatedCurrentDll>
+      <_DeprecatedCurrentPdb>$(ResoniteModsDir)\ResoniteImeIntegration.pdb</_DeprecatedCurrentPdb>
+      <_LegacyImeConfig>$(ResolvedResonitePath)\rml_config\ResoniteImeIntegration.Mod.json</_LegacyImeConfig>
+      <_LegacySuffix>.disabled.$([System.DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))</_LegacySuffix>
+    </PropertyGroup>
+    <Error Text="Build output not found at $(TargetPath)." Condition="!Exists('$(TargetPath)')" />
+    <Message
+      Text="Disabling deprecated legacy IME artifacts before copy."
+      Importance="high"
+      Condition="Exists('$(_DeprecatedCurrentDll)') OR Exists('$(_DeprecatedCurrentPdb)') OR Exists('$(_LegacyImeConfig)')"
+    />
+    <Move
+      SourceFiles="$(_DeprecatedCurrentDll)"
+      DestinationFiles="$(_DeprecatedCurrentDll)$(_LegacySuffix)"
+      Condition="Exists('$(_DeprecatedCurrentDll)') AND '$(TargetFileName)'!='ResoniteImeIntegration.dll'"
+    />
+    <Move
+      SourceFiles="$(_DeprecatedCurrentPdb)"
+      DestinationFiles="$(_DeprecatedCurrentPdb)$(_LegacySuffix)"
+      Condition="Exists('$(_DeprecatedCurrentPdb)') AND '$(TargetFileName)'!='ResoniteImeIntegration.pdb'"
+    />
+    <Move
+      SourceFiles="$(_LegacyImeConfig)"
+      DestinationFiles="$(_LegacyImeConfig)$(_LegacySuffix)"
+      Condition="Exists('$(_LegacyImeConfig)')"
+    />
+    <ItemGroup>
+      <_CopyDestination Include="$(ResoniteModsDir)/$(TargetFileName)">
+        <SkipUnchangedFiles>true</SkipUnchangedFiles>
+        <Retries>2</Retries>
+        <RetryDelayMilliseconds>250</RetryDelayMilliseconds>
+        <ContinueOnError>true</ContinueOnError>
+        <Message>Copying $(TargetFileName) to $(ResoniteModsDir)</Message>
+      </_CopyDestination>
+      <_CopyDir Include="$(ResoniteModsDir)" />
+    </ItemGroup>
+    <Message Text="@( _CopyDestination -> '%(Message)')"
+             Importance="high"
+             Condition="'@(_CopyDestination)'!=''" />
+    <MakeDir Directories="@(_CopyDir)" Condition="'@(_CopyDir)'!=''" />
+    <Copy
+      SourceFiles="$(_BuiltAssembly)"
+      DestinationFiles="@(_CopyDestination)"
+      SkipUnchangedFiles="%(_CopyDestination.SkipUnchangedFiles)"
+      Retries="%(_CopyDestination.Retries)"
+      RetryDelayMilliseconds="%(_CopyDestination.RetryDelayMilliseconds)"
+      ContinueOnError="%(_CopyDestination.ContinueOnError)"
+    />
+  </Target>
+</Project>

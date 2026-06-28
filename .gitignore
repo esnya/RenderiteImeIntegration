@@ -1,0 +1,23 @@
+# Build outputs
+bin/
+obj/
+Debug/
+Release/
+TestResult*/
+*.log
+
+# User files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE
+.vs/
+
+# Resonite
+Resonite/
+
+
+/local_notes/

@@ -1,0 +1,36 @@
+mode: Mainline
+branches:
+  main:
+    regex: ^main$
+    tag: ''
+    increment: patch
+    prevent-increment-of-merged-branch-version: true
+  feature:
+    regex: ^(feature|feat|bugfix)/
+    increment: patch
+  pull-request:
+    regex: ^(pull|pr)/
+    tag: pr
+    increment: patch
+  hotfix:
+    regex: ^hotfix/
+    increment: patch
+  release:
+    regex: ^release/
+    increment: minor
+  develop:
+    regex: ^develop$
+    increment: minor
+ignore:
+  sha: []
+tag-prefix: v
+continuous-delivery-fallback-tag: ci
+legacy-semver-padding: 3
+build-metadata-padding: 5
+commits-since-version-source-padding: 4
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.0'
+assembly-informational-format: '{FullSemVer}+{ShortSha}'
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'

@@ -1,0 +1,8 @@
+root = false
+
+[*.cs]
+# Disable CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+# Disable IDE0059: Unnecessary assignment of a value
+dotnet_diagnostic.IDE0059.severity = none
