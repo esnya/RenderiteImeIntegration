@@ -1,5 +1,6 @@
 using FrooxEngine;
 using HarmonyLib;
+using ImeIntegration.Core;
 using ImeIntegration.Windows;
 using Renderite.Shared;
 
@@ -80,4 +81,25 @@ internal static class InputInterfacePatches
         );
     }
 
+    [HarmonyPatch("CollectOutputState")]
+    [HarmonyPostfix]
+    private static void CollectOutputStatePostfix(InputInterface __instance, OutputState __result)
+    {
+        if (
+            !OperatingSystem.IsWindows()
+            || __result is null
+            || !__instance.IsKeyboardActive
+            || !RenderiteCompositionContract.IsCursorPositionSupported
+        )
+        {
+            return;
+        }
+
+        if (!WindowsImeOverlayManager.TryGetCursorWindowPosition(__instance, out var cursorPosition))
+        {
+            return;
+        }
+
+        RenderiteCompositionContract.CompositionCursorPositionField!.SetValue(__result, cursorPosition);
+    }
 }

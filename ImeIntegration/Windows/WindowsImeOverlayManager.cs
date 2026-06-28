@@ -3,6 +3,7 @@ using System.Runtime.Versioning;
 using Elements.Assets;
 using Elements.Core;
 using FrooxEngine;
+using Renderite.Shared;
 
 namespace ImeIntegration.Windows;
 
@@ -18,6 +19,7 @@ internal static class WindowsImeOverlayManager
     }
 
     private static readonly ConcurrentDictionary<TextEditor, Overlay> Overlays = new();
+    private static readonly ConcurrentDictionary<TextEditor, InputInterface> ActiveEditors = new();
 
     public static void Attach(TextEditor editor)
     {
@@ -25,6 +27,8 @@ internal static class WindowsImeOverlayManager
         {
             return;
         }
+
+        ActiveEditors[editor] = editor.InputInterface;
 
         try
         {
@@ -74,6 +78,8 @@ internal static class WindowsImeOverlayManager
 
     public static void Detach(TextEditor editor)
     {
+        ActiveEditors.TryRemove(editor, out _);
+
         if (!Overlays.TryRemove(editor, out var overlay))
         {
             return;
@@ -91,6 +97,8 @@ internal static class WindowsImeOverlayManager
 
     public static void Teardown()
     {
+        ActiveEditors.Clear();
+
         foreach (var overlay in Overlays.Values)
         {
             try
@@ -142,6 +150,44 @@ internal static class WindowsImeOverlayManager
         }
     }
 
+    public static bool TryGetCursorWindowPosition(InputInterface input, out RenderVector2 position)
+    {
+        position = default;
+
+        foreach (var item in ActiveEditors)
+        {
+            var editor = item.Key;
+            if (item.Value != input || editor.Slot.IsDestroyed || editor.Text?.Target is null)
+            {
+                continue;
+            }
+
+            if (!TryGetCaretAnchor(editor, out var anchor, out var lineHeight))
+            {
+                continue;
+            }
+
+            var world = editor.Slot.World;
+            if (
+                world is null
+                || !TryProjectWorldToWindow(world, input, anchor, out var caretPosition, out var depth, out var tan)
+            )
+            {
+                continue;
+            }
+
+            var resolution = input.WindowResolution;
+            var screenLineHeight = WorldLengthToWindowPixels(depth, lineHeight, resolution.y, tan);
+            position = new RenderVector2(
+                Math.Clamp(caretPosition.x + screenLineHeight * 0.12f, 0f, resolution.x),
+                Math.Clamp(caretPosition.y + screenLineHeight * 1.15f, 0f, resolution.y)
+            );
+            return true;
+        }
+
+        return false;
+    }
+
     private static bool TryGetCaretAnchor(TextEditor editor, out float3 anchor, out float lineHeight)
     {
         var targetText = editor.Text?.Target as TextRenderer;
@@ -173,6 +219,69 @@ internal static class WindowsImeOverlayManager
         anchor = default;
         lineHeight = 0f;
         return false;
+    }
+
+    private static bool TryProjectWorldToWindow(
+        World world,
+        InputInterface input,
+        float3 point,
+        out RenderVector2 position,
+        out float depth,
+        out float tan
+    )
+    {
+        position = default;
+        depth = 0f;
+        tan = 0f;
+
+        world.GetViewTransform(out var viewPosition, out var viewRotation, out _);
+        var localPoint = viewRotation.Inverted * (point - viewPosition);
+        if (localPoint.z <= 0.0001f)
+        {
+            return false;
+        }
+
+        depth = localPoint.z;
+
+        var resolution = input.WindowResolution;
+        if (resolution.x <= 0 || resolution.y <= 0)
+        {
+            return false;
+        }
+
+        tan = MathF.Tan(world.GetFOV() * 0.5f * (MathF.PI / 180f));
+        if (tan <= 0.0001f)
+        {
+            return false;
+        }
+
+        var aspect = world.GetAspect();
+        var uv = new float2(
+            0.5f + localPoint.x / (localPoint.z * tan * aspect * 2f),
+            0.5f - localPoint.y / (localPoint.z * tan * 2f)
+        );
+
+        if (float.IsNaN(uv.x) || float.IsNaN(uv.y) || float.IsInfinity(uv.x) || float.IsInfinity(uv.y))
+        {
+            return false;
+        }
+
+        position = new RenderVector2(
+            Math.Clamp(uv.x * resolution.x, 0f, resolution.x),
+            Math.Clamp(uv.y * resolution.y, 0f, resolution.y)
+        );
+        return true;
+    }
+
+    private static float WorldLengthToWindowPixels(float depth, float worldLength, float windowHeight, float tan)
+    {
+        var visibleWorldHeight = depth * tan * 2f;
+        if (visibleWorldHeight <= 0.0001f)
+        {
+            return 0f;
+        }
+
+        return Math.Max(worldLength, 0f) / visibleWorldHeight * windowHeight;
     }
 
     private static void UpdateOverlayTransform(Overlay overlay)
